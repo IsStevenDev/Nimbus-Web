@@ -3,55 +3,197 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Nimbus — consulta el tiempo de cualquier ciudad con fondo animado según el clima. Hecho con Vite y Open-Meteo."
+    />
+    <meta name="theme-color" content="#05070f" />
+
+    <!-- Open Graph (vista previa al compartir en redes / GitHub) -->
+    <meta property="og:title" content="Nimbus" />
+    <meta
+      property="og:description"
+      content="El tiempo de cualquier ciudad, con fondo animado según el clima."
+    />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/IsStevenDev/Weather---Web/main/screenshots/night.jpg"
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon (emoji ⛅ embebido en SVG) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap"
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛅</text></svg>"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
     <link rel="stylesheet" href="src/css/style.css" />
-    <title>Weather - Web</title>
+    <title>Nimbus · El tiempo en tiempo real</title>
   </head>
 
-  <body>
-    <div class="container">
-      <div class="search-box">
-        <i class="fa-solid fa-location-dot"></i>
-        <input type="text" placeholder="Ingresa tu ubicacion" />
-        <button class="fa-solid fa-magnifying-glass"></button>
+  <body data-theme="clear-day">
+    <!-- ═══ Fondo dinámico: degradado que cambia según el clima ═══ -->
+    <div class="sky" aria-hidden="true">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+    </div>
+
+    <!-- Destello de tormenta -->
+    <div class="lightning" aria-hidden="true"></div>
+
+    <!-- Partículas: lluvia, nieve, estrellas, nubes… -->
+    <canvas id="fx" aria-hidden="true"></canvas>
+
+    <main class="app">
+      <!-- ═══ Cabecera ═══ -->
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-icon"><i class="fa-solid fa-cloud-sun"></i></span>
+          <div class="brand-text">
+            <h1>Nimbus</h1>
+            <p class="tagline">El tiempo, en tiempo real</p>
+          </div>
+        </div>
+
+        <button
+          id="unitToggle"
+          class="unit-toggle"
+          type="button"
+          aria-label="Cambiar entre Celsius y Fahrenheit"
+        >
+          <span class="unit active" data-unit="C">°C</span>
+          <span class="unit" data-unit="F">°F</span>
+        </button>
+      </header>
+
+      <!-- ═══ Buscador con sugerencias ═══ -->
+      <div class="search-wrap">
+        <form class="search-box" id="searchForm" autocomplete="off">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          <input
+            id="cityInput"
+            type="text"
+            placeholder="Busca una ciudad..."
+            aria-label="Nombre de la ciudad"
+            aria-autocomplete="list"
+            aria-controls="suggestions"
+          />
+          <button
+            type="button"
+            id="geoBtn"
+            class="icon-btn ghost"
+            aria-label="Usar mi ubicación actual"
+            title="Mi ubicación"
+          >
+            <i class="fa-solid fa-crosshairs"></i>
+          </button>
+          <button type="submit" class="icon-btn primary" aria-label="Buscar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+
+        <ul class="suggestions" id="suggestions" role="listbox" hidden></ul>
       </div>
 
-      <div class="not-found">
-        <img src="images/404.webp" />
-        <p>Oops! Ubicacion Invalida :/</p>
-      </div>
+      <!-- ═══ Mensaje de carga / error ═══ -->
+      <p class="status" id="status" hidden></p>
 
-      <div class="weather-box">
-        <img src="" />
-        <p class="temperature"></p>
-        <p class="description"></p>
-      </div>
+      <!-- ═══ Ciudad no encontrada ═══ -->
+      <section class="card glass not-found" id="notFound" hidden>
+        <img src="images/404.webp" alt="" />
+        <p>Oops! Ubicación inválida :/</p>
+        <span>Revisa el nombre o prueba con otra ciudad</span>
+      </section>
 
-      <div class="weather-details">
-        <div class="humidity">
-          <i class="fa-solid fa-water"></i>
+      <!-- ═══ Clima actual ═══ -->
+      <section class="card glass current" id="current" hidden>
+        <div class="current-top">
+          <div>
+            <p class="city" id="cityName">—</p>
+            <p class="date" id="dateText">—</p>
+          </div>
+          <span class="badge" id="badgeHora"><i class="fa-regular fa-clock"></i> —</span>
+        </div>
+
+        <div class="current-body">
+          <div class="weather-icon" id="weatherIcon" aria-hidden="true"></div>
+          <div class="temp-block">
+            <p class="temperature" id="tempValue">--°</p>
+            <p class="description" id="descText">—</p>
+            <p class="feels" id="feelsText">—</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Detalles ═══ -->
+      <section class="details" id="details" hidden>
+        <div class="card glass detail">
+          <i class="fa-solid fa-droplet" aria-hidden="true"></i>
           <div class="text">
-            <span></span>
+            <span id="humidity">--</span>
             <p>Humedad</p>
           </div>
         </div>
-        <div class="wind">
-          <i class="fa-solid fa-wind"></i>
+        <div class="card glass detail">
+          <i class="fa-solid fa-wind" aria-hidden="true"></i>
           <div class="text">
-            <span></span>
-            <p>Velocidad del viento</p>
+            <span id="wind">--</span>
+            <p>Viento</p>
           </div>
         </div>
-      </div>
-    </div>
+        <div class="card glass detail">
+          <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+          <div class="text">
+            <span id="pressure">--</span>
+            <p>Presión</p>
+          </div>
+        </div>
+      </section>
 
-    <script
-      src="https://kit.fontawesome.com/7c8801c017.js"
-      crossorigin="anonymous"
-    ></script>
+      <!-- ═══ Pronóstico por horas ═══ -->
+      <section class="card glass hourly" id="hourly" hidden>
+        <h2><i class="fa-regular fa-clock"></i> Próximas horas</h2>
+        <div class="rail" id="hourRail"></div>
+      </section>
+
+      <!-- ═══ Pronóstico por días ═══ -->
+      <section class="card glass daily" id="daily" hidden>
+        <h2><i class="fa-regular fa-calendar"></i> Próximos 7 días</h2>
+        <ul class="days" id="daysList"></ul>
+      </section>
+
+      <!-- ═══ Pie ═══ -->
+      <footer class="footer">
+        <p>
+          Datos proporcionados por
+          <a href="https://open-meteo.com" target="_blank" rel="noreferrer"
+            >Open-Meteo</a
+          >
+          · Sin API key
+        </p>
+        <p>
+          © <span id="year"></span> Steven Marimón ·
+          <a
+            href="https://github.com/IsStevenDev/Weather---Web"
+            target="_blank"
+            rel="noreferrer"
+            >Código fuente</a
+          >
+        </p>
+      </footer>
+    </main>
+
     <script type="module" src="./src/js/index.js"></script>
   </body>
 </html>
