@@ -335,6 +335,10 @@ body {
 /* ── Buscador ───────────────────────────────────────────────── */
 .search-wrap {
   position: relative;
+  /* Capa propia y por encima de las tarjetas: sin esto, la animación de
+     entrada (transform) encierra el z-index del desplegable y las tarjetas
+     se pintarían encima, mezclando ambos textos */
+  z-index: 30;
   margin-bottom: 18px;
   animation: fadeUp 0.5s 0.08s var(--ease) both;
 }
@@ -441,7 +445,7 @@ body {
   z-index: 20;
   list-style: none;
   border-radius: var(--radius-sm);
-  background: rgba(10, 14, 26, 0.92);
+  background: rgba(10, 14, 26, 0.98);
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
