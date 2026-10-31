@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://isstevendev.github.io/Nimbus-Web/"><img src="https://img.shields.io/badge/Live-Demo-3fb950?style=flat" alt="Live demo"></a>
   <a href="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white"><img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite"></a>
   <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black" alt="JavaScript"></a>
   <a href="https://open-meteo.com/"><img src="https://img.shields.io/badge/API-Open--Meteo%20·%20free%20no%20key-2196F3?style=flat" alt="Open-Meteo API"></a>
@@ -42,26 +43,28 @@ The background is part of the forecast, not decoration:
 
 ## 🛠 Built with
 
-| Layer | Tech |
-|---|---|
-| Markup | Semantic **HTML5** |
-| Styling | **CSS3** — custom properties (theme engine), glassmorphism, Flexbox/Grid, keyframes |
-| Logic | **JavaScript ES modules** — `fetch`/async-await, `Intl` for dates, Canvas API |
-| Tooling | **Vite** (dev server + production build) |
-| Data | [**Open-Meteo**](https://open-meteo.com) forecast + geocoding (free, no API key) · [BigDataCloud](https://www.bigdatacloud.net) reverse geocoding |
+| Layer   | Tech                                                                                                                                              |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Markup  | Semantic **HTML5**                                                                                                                                |
+| Styling | **CSS3** — custom properties (theme engine), glassmorphism, Flexbox/Grid, keyframes                                                               |
+| Logic   | **JavaScript ES modules** — `fetch`/async-await, `Intl` for dates, Canvas API                                                                     |
+| Tooling | **Vite** (dev server + production build)                                                                                                          |
+| Data    | [**Open-Meteo**](https://open-meteo.com) forecast + geocoding (free, no API key) · [BigDataCloud](https://www.bigdatacloud.com) reverse geocoding |
 
 > **No API key, no `.env`.** Clone, install, run — it works out of the box. That was a deliberate choice so anyone who finds this repo can try it in seconds.
 
 ## ▶️ Getting started
 
 ```bash
-git clone https://github.com/IsStevenDev/Weather---Web.git
-cd Weather---Web
+git clone https://github.com/IsStevenDev/Nimbus-Web.git
+cd Nimbus-Web
 npm install
 npm run dev
 ```
 
 Open <http://localhost:5173> and search any city.
+
+**No install needed?** The app is hosted on GitHub Pages: <https://isstevendev.github.io/Nimbus-Web/>
 
 For a production build:
 
@@ -74,25 +77,25 @@ npm run preview
 
 The background follows the real weather, but you can force any theme with a URL parameter — a fun way to explore the design system:
 
-| URL | Effect |
-|---|---|
-| `http://localhost:5173/?tema=rain` | Rain streaks + blue-slate gradient |
-| `http://localhost:5173/?tema=snow` | Snowflakes + icy teal gradient |
-| `http://localhost:5173/?tema=storm` | Heavy rain + lightning flashes + violet |
-| `http://localhost:5173/?tema=clear-day` | Sun glow + golden accents |
-| `http://localhost:5173/?tema=clear-night` | Twinkling stars + indigo night |
-| `http://localhost:5173/?tema=fog` | Rolling mist + neutral gray |
+| URL                                       | Effect                                  |
+| ----------------------------------------- | --------------------------------------- |
+| `http://localhost:5173/?tema=rain`        | Rain streaks + blue-slate gradient      |
+| `http://localhost:5173/?tema=snow`        | Snowflakes + icy teal gradient          |
+| `http://localhost:5173/?tema=storm`       | Heavy rain + lightning flashes + violet |
+| `http://localhost:5173/?tema=clear-day`   | Sun glow + golden accents               |
+| `http://localhost:5173/?tema=clear-night` | Twinkling stars + indigo night          |
+| `http://localhost:5173/?tema=fog`         | Rolling mist + neutral gray             |
 
 Combine it with a city: `?q=Madrid&tema=storm`
 
-| Rain | Storm | Snow |
-|---|---|---|
+| Rain                                                | Storm                                                 | Snow                                                |
+| --------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------- |
 | <img src="./screenshots/rain.jpg" alt="Rain theme"> | <img src="./screenshots/storm.jpg" alt="Storm theme"> | <img src="./screenshots/snow.jpg" alt="Snow theme"> |
 
 ## 📂 Project structure
 
 ```
-Weather---Web/
+Nimbus-Web/
 ├── images/
 │   └── 404.webp          # error illustration
 ├── screenshots/          # README previews
